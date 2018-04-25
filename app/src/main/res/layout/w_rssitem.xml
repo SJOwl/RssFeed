@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rssiRoot"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:layout_marginBottom="20dp"
+    android:elevation="4dp">
+
+    <ImageView
+        android:id="@+id/rssiIcon"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/rssiBookmarkYes"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_star_filled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/rssiBookmarkNo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_star_empty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/rssiTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:lines="5"
+        android:paddingBottom="2dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="16dp"
+        android:paddingTop="2dp"
+        android:text="RSS is a type of web feed which allows users to access updates to online content in a standardized"
+        android:textColor="@color/colorText"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rssiIcon"
+        app:layout_constraintStart_toEndOf="@id/rssiBookmarkYes"
+        app:layout_constraintTop_toBottomOf="@id/rssiBookmarkYes" />
+
+    <TextView
+        android:id="@+id/rssiDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="start"
+        android:paddingEnd="4dp"
+        android:paddingStart="16dp"
+        android:text="52 min ago"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/rssiTitle"
+        app:layout_constraintStart_toEndOf="@+id/rssiBookmarkYes"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/rssiProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress"
+        app:layout_constraintBottom_toBottomOf="@+id/rssiIcon"
+        app:layout_constraintEnd_toEndOf="@+id/rssiIcon"
+        app:layout_constraintStart_toStartOf="@+id/rssiIcon"
+        app:layout_constraintTop_toTopOf="@+id/rssiIcon" />
+
+</android.support.constraint.ConstraintLayout>

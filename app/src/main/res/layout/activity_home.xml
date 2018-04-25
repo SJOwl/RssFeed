@@ -4,15 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="au.sj.owl.templateproject.HomeActivity">
+    tools:context="au.sj.owl.templateproject.ui.home.HomeActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <com.flyco.tablayout.SlidingTabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorBackground"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        app:tl_indicator_color="@color/colorPrimary"
+        app:tl_indicator_corner_radius="5dp"
+        app:tl_indicator_gravity="BOTTOM"
+        app:tl_indicator_margin_bottom="8dp"
+        app:tl_indicator_margin_left="4dp"
+        app:tl_indicator_margin_right="4dp"
+        app:tl_indicator_margin_top="8dp"
+        app:tl_indicator_style="BLOCK"
+        app:tl_textSelectColor="@color/colorBackground"
+        app:tl_textUnselectColor="@color/colorTextSecondary" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabs" />
 
 </android.support.constraint.ConstraintLayout>
