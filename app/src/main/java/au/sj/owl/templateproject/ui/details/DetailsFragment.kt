@@ -5,18 +5,17 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintSet
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.text.format.DateUtils
-import android.util.TimingLogger
-import android.view.Menu
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import au.sj.owl.templateproject.App
 import au.sj.owl.templateproject.R
+import au.sj.owl.templateproject.R.layout
 import au.sj.owl.templateproject.di.detailed.DetailedRssModule
 import au.sj.owl.templateproject.di.rssall.RssAllModule
 import au.sj.owl.templateproject.ui.home.dataholder.DataHolder
@@ -26,6 +25,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_details.progressBar
 import kotlinx.android.synthetic.main.activity_details.rssdetFab
@@ -34,15 +34,10 @@ import kotlinx.android.synthetic.main.activity_details.rssdetPubDate
 import kotlinx.android.synthetic.main.activity_details.rssdetTitle
 import kotlinx.android.synthetic.main.activity_details.rssdetWebView
 import kotlinx.android.synthetic.main.activity_details.rssdetsCsCont
-import kotlinx.android.synthetic.main.activity_details.toolbar
 import timber.log.Timber
 import javax.inject.Inject
 
-
-class DetailsActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var iDetailedRssPresenter: IDetailedRssPresenter
+class DetailsFragment : Fragment() {
 
     /**
      * ==========================        user actions with this activity        ==========================
@@ -61,39 +56,39 @@ class DetailsActivity : AppCompatActivity() {
 
     private lateinit var rssItem: DataHolder
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val timings = TimingLogger("sj", "detailedActivity")
+    @Inject
+    lateinit var iDetailedRssPresenter: IDetailedRssPresenter
 
+    private var feedsDisposable: Disposable? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.e("jsp DetailsFragment onCreate")
         super.onCreate(savedInstanceState)
-        timings.addSplit("super.onCreate(savedInstanceState)")
-        setContentView(R.layout.activity_details)
-        timings.addSplit("setContentView(R.layout.activity_details)")
-        setSupportActionBar(toolbar)
-        timings.addSplit("setSupportActionBar(toolbar)")
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        timings.addSplit("supportActionBar?.setDisplayHomeAsUpEnabled(true)")
-        App.get(applicationContext).applicationComponent()
+        retainInstance = true
+        // injection for subcomponent
+        App.get(activity!!.applicationContext).applicationComponent()
                 .plus(RssAllModule())
                 .plus(DetailedRssModule())
                 .inject(this)
-        timings.addSplit("injection")
 
+    }
+
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        Timber.e("jsp rssAll onCreateView")
+        val rootView = inflater.inflate(layout.activity_details, container, false)
+        return rootView
+    }
+
+    override fun onViewCreated(view: View,
+                               savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Timber.e("jsp rssAll onViewCreated")
+
+        // init layout items
         setUpContent()
-        timings.addSplit("setUpContent()")
-
-        timings.dumpToLog()
     }
-
-    override fun onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this)
-    }
-    //
-    //    override fun onPause() {
-    //        (rssdetWebView.parent as ViewGroup).removeView(rssdetWebView)
-    //        rssdetWebView.destroy()
-    //
-    //        super.onPause()
-    //    }
 
     /**
      * ==========================        init views        ==========================
@@ -112,12 +107,11 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setTitle() {
-        title = ""
         rssdetTitle.text = rssItem.title
     }
 
     private fun setDate() {
-        rssdetPubDate.text = DateUtils.formatDateTime(this,
+        rssdetPubDate.text = DateUtils.formatDateTime(this.activity,
                                                       rssItem.date,
                                                       DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE)
 
@@ -147,7 +141,9 @@ class DetailsActivity : AppCompatActivity() {
     private fun setIcon() {
         if (rssItem.imgUrl != "") {
             rssdetIcon.transitionName = rssItem.imgUrl
-            rssdetIcon.setOnClickListener { finishAfterTransition() }
+            rssdetIcon.setOnClickListener {
+                // todo close this fragment
+            }
             postponeEnterTransition()
             Glide.with(this)
                     .load(rssItem.imgUrl)
@@ -177,7 +173,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setUpContent() {
-        rssItem = intent.getParcelableExtra("dataHolder")
+        //        rssItem = intent.getParcelableExtra("dataHolder")
         iDetailedRssPresenter.bindLink(rssItem.link)
         setFab()
         setTitle()
@@ -186,24 +182,11 @@ class DetailsActivity : AppCompatActivity() {
         setIcon()
     }
 
-
-    /**
-     * ==========================        menu        ==========================
-     */
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.details, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.menu_browser -> openInBrowser()
-            else              -> return super.onOptionsItemSelected(item)
+    companion object {
+        fun getInstance(item: DataHolder): DetailsFragment {
+            var fragment = DetailsFragment()
+            fragment.rssItem = item
+            return fragment
         }
-        return true
     }
 }

@@ -1,10 +1,6 @@
 package au.sj.owl.templateproject.ui.home
 
-import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Parcel
-import android.os.Parcelable
-import android.os.Parcelable.Creator
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
@@ -15,6 +11,9 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import au.sj.owl.templateproject.R
+import au.sj.owl.templateproject.ui.home.dataholder.DataHolder
+import au.sj.owl.templateproject.ui.home.dataholder.DiffDataCallback
+import au.sj.owl.templateproject.ui.home.dataholder.IHomeActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -29,75 +28,6 @@ import kotlinx.android.synthetic.main.w_rssitem.view.rssiProgress
 import kotlinx.android.synthetic.main.w_rssitem.view.rssiRoot
 import kotlinx.android.synthetic.main.w_rssitem.view.rssiTitle
 import timber.log.Timber
-
-class DataHolder(var link: String,
-                 var title: String,
-                 var date: Long,
-                 var imgUrl: String = "",
-                 var bookmarked: Boolean = false,
-                 var wasRead: Boolean = false) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte())
-
-    override fun writeToParcel(parcel: Parcel,
-                               flags: Int) {
-        parcel.writeString(link)
-        parcel.writeString(title)
-        parcel.writeLong(date)
-        parcel.writeString(imgUrl)
-        parcel.writeByte(if (bookmarked) 1 else 0)
-        parcel.writeByte(if (wasRead) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Creator<DataHolder> {
-        override fun createFromParcel(parcel: Parcel): DataHolder {
-            return DataHolder(parcel)
-        }
-
-        override fun newArray(size: Int): Array<DataHolder?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
-class DiffDataCallback(var itemsOld: List<DataHolder>,
-                       var itemsNew: List<DataHolder>
-                      ) : DiffUtil.Callback() {
-
-    override fun areItemsTheSame(oldItemPosition: Int,
-                                 newItemPosition: Int): Boolean {
-        val itemOld = itemsOld[oldItemPosition]
-        val itemNew = itemsNew[newItemPosition]
-        return itemNew.link == itemOld.link
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int,
-                                    newItemPosition: Int): Boolean {
-        return true
-    }
-
-
-    override fun getOldListSize(): Int = itemsOld.size
-
-    override fun getNewListSize(): Int = itemsNew.size
-}
-
-interface IHomeActivity {
-    fun appContext(): Context
-    fun openRssDetails(dataHolder: DataHolder,
-                       holder: RSSAdapter.ViewHolder)
-}
 
 class RSSAdapter(var activity: IHomeActivity,
                  var items: List<DataHolder>) : RecyclerView.Adapter<RSSAdapter.ViewHolder>() {
@@ -152,7 +82,7 @@ class RSSAdapter(var activity: IHomeActivity,
                                                      dataSource: DataSource?,
                                                      isFirstResource: Boolean): Boolean {
                             holder.progress.visibility = View.GONE
-                            Timber.w("jsp loaded ${item.imgUrl} ")
+                            //                            Timber.w("jsp loaded ${item.imgUrl} ")
                             return false
                         }
 
@@ -182,9 +112,10 @@ class RSSAdapter(var activity: IHomeActivity,
     }
 
     fun updateList(list: List<DataHolder>) {
-        Timber.v("jsp updating apps list. New size: ${list.size}")
+        Timber.e("jsp got updating rv list; Size: ${items.size} -> ${list.size}")
 
-        val diffRes = DiffUtil.calculateDiff(DiffDataCallback(items, list))
+        val diffRes = DiffUtil.calculateDiff(DiffDataCallback(items,
+                                                              list))
         items = list
         diffRes.dispatchUpdatesTo(this)
     }

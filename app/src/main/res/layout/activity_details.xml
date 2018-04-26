@@ -42,7 +42,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/rssdetContentContainer"
         android:layout_width="match_parent"
@@ -56,6 +55,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/rssdetsCsCont"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -111,25 +111,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rssdetPubDate" />
 
-            <!--<TextView-->
-            <!--android:id="@+id/rssdetText"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="start"-->
-            <!--android:paddingBottom="2dp"-->
-            <!--android:paddingEnd="4dp"-->
-            <!--android:paddingStart="@dimen/activity_horizontal_margin"-->
-            <!--android:paddingTop="2dp"-->
-            <!--android:text="RSS is a type of web feed which allows users to access updates to online content in a standardized, computer-readable format. These feeds can, for example, allow a user to keep track of many different websites in a single news aggregator. The news aggregator will automatically check the RSS feed for new content. RSS is a type of web feed which allows users to access updates to online content in a standardized, computer-readable format. These feeds can, for example, allow a user to keep track of many different websites in a single news aggregator. The news aggregator will automatically check the RSS feed for new content. RSS is a type of web feed which allows users to access updates to online content in a standardized, computer-readable format. These feeds can, for example, allow a user to keep track of many different websites in a single news aggregator. The news aggregator will automatically check the RSS feed for new content"-->
-            <!--android:textColor="@color/colorTextSecondary"-->
-            <!--android:textSize="14sp"-->
-            <!--android:textStyle="bold"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/rssdetDivBottom" />-->
-
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
@@ -142,13 +123,14 @@
             <WebView
                 android:id="@+id/rssdetWebView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/progressBar" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/rssdetFab"
@@ -157,7 +139,6 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:scaleType="center"
-        android:src="@drawable/ic_bookmarkno"
         app:fabSize="normal"
         app:layout_anchor="@id/rssdetContentContainer"
         app:layout_anchorGravity="bottom|right|end" />
