@@ -1,29 +1,29 @@
 package au.sj.owl.templateproject.ui.home
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
+import android.view.ViewGroup
 import au.sj.owl.templateproject.R
-import au.sj.owl.templateproject.ui.details.DetailsActivity
-import au.sj.owl.templateproject.ui.home.RSSAdapter.ViewHolder
-import au.sj.owl.templateproject.ui.home.dataholder.DataHolder
-import au.sj.owl.templateproject.ui.home.dataholder.IHomeActivity
-import au.sj.owl.templateproject.ui.home.rssall.RssFeedsAllFragment
-import au.sj.owl.templateproject.ui.home.rssbookmarked.RssFeedsBookmarkedFragment
+import au.sj.owl.templateproject.ui.home.viewpager.RssFeedsAllFragment
+import au.sj.owl.templateproject.ui.home.viewpager.RssFeedsBookmarkedFragment
 import kotlinx.android.synthetic.main.activity_home.container
 import kotlinx.android.synthetic.main.activity_home.tabs
 import timber.log.Timber
 
-class HomeActivity : AppCompatActivity(),
-                     IHomeActivity {
+
+class MainActivity : AppCompatActivity() {
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private var currentTab = 0
+
+    override fun onStart() {
+        super.onStart()
+        Timber.d("jsp lcycle ${this.javaClass.simpleName} onStart ")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,17 +33,24 @@ class HomeActivity : AppCompatActivity(),
         container.adapter = mSectionsPagerAdapter
         container.offscreenPageLimit = mSectionsPagerAdapter!!.count // save fragments on swipe tabs
         tabs.setViewPager(container)
-        Timber.d("jsp HomeActivity onCreate")
+        Timber.d("jsp ${this.javaClass.simpleName} onCreate")
     }
 
     override fun onResume() {
         super.onResume()
+        Timber.d("jsp lcycle ${this.javaClass.simpleName} onResume ")
         restoreStateFromPrefs()
     }
 
     override fun onPause() {
         super.onPause()
+        Timber.d("jsp lcycle ${this.javaClass.simpleName} onPause ")
         saveStateToPrefs()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("jsp lcycle ${this.javaClass.simpleName} onDestroy ")
     }
 
     override fun onBackPressed() {
@@ -54,13 +61,13 @@ class HomeActivity : AppCompatActivity(),
     }
 
     private fun saveStateToPrefs() {
-        val prefs = getSharedPreferences("HomeActivity", Context.MODE_PRIVATE).edit()
+        val prefs = getSharedPreferences("MainActivity", Context.MODE_PRIVATE).edit()
         prefs.putInt("tab", container.currentItem)
         prefs.apply()
     }
 
     private fun restoreStateFromPrefs() {
-        val prefs = getSharedPreferences("HomeActivity", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("MainActivity", Context.MODE_PRIVATE)
         container.currentItem = prefs.getInt("tab", 0)
     }
 
@@ -79,25 +86,15 @@ class HomeActivity : AppCompatActivity(),
         override fun getCount(): Int = 2
 
         override fun getPageTitle(position: Int): CharSequence? = titles[position]
+
+        var currentFragment: Fragment? = null
+
+        override fun setPrimaryItem(container: ViewGroup,
+                                    position: Int,
+                                    obj: Any) {
+            if (currentFragment != obj)
+                currentFragment = obj as Fragment
+            super.setPrimaryItem(container, position, obj)
+        }
     }
-
-    /**
-     * ==========================        IHomeActivity        ==========================
-     */
-    override fun appContext(): Context = applicationContext
-
-    override fun openRssDetails(dataHolder: DataHolder,
-                                holder: ViewHolder) {
-
-        val intent = Intent(this, DetailsActivity::class.java)
-        val sharedElement = holder.icon
-        intent.putExtra("dataHolder", dataHolder)
-        //        intent.putExtra("link", dataHolder.link)
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                                                                         sharedElement,
-                                                                         sharedElement.transitionName)
-        startActivity(intent, options.toBundle())
-
-    }
-
 }

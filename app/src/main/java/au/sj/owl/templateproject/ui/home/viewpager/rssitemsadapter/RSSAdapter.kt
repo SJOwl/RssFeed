@@ -1,4 +1,4 @@
-package au.sj.owl.templateproject.ui.home
+package au.sj.owl.templateproject.ui.home.viewpager.rssitemsadapter
 
 import android.graphics.drawable.Drawable
 import android.support.v7.util.DiffUtil
@@ -13,7 +13,8 @@ import android.widget.TextView
 import au.sj.owl.templateproject.R
 import au.sj.owl.templateproject.ui.home.dataholder.DataHolder
 import au.sj.owl.templateproject.ui.home.dataholder.DiffDataCallback
-import au.sj.owl.templateproject.ui.home.dataholder.IHomeActivity
+import au.sj.owl.templateproject.ui.home.dataholder.IRssView
+import au.sj.owl.templateproject.ui.home.viewpager.rssitemsadapter.RSSAdapter.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -29,14 +30,15 @@ import kotlinx.android.synthetic.main.w_rssitem.view.rssiRoot
 import kotlinx.android.synthetic.main.w_rssitem.view.rssiTitle
 import timber.log.Timber
 
-class RSSAdapter(var activity: IHomeActivity,
-                 var items: List<DataHolder>) : RecyclerView.Adapter<RSSAdapter.ViewHolder>() {
+class RSSAdapter(var hostView: IRssView,
+                 var items: List<DataHolder>) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder,
                                   position: Int) {
         val item = items[holder.adapterPosition]
 
         holder.icon.visibility = View.GONE
+        holder.icon.setImageResource(0)
 
         if (item.bookmarked) {
             holder.bookmarkNo.visibility = View.INVISIBLE
@@ -48,7 +50,7 @@ class RSSAdapter(var activity: IHomeActivity,
 
         holder.title.text = item.title
 
-        holder.date.text = DateUtils.formatDateTime(activity.appContext(),
+        holder.date.text = DateUtils.formatDateTime(hostView.appContext(),
                                                     item.date,
                                                     DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE)
 
@@ -59,13 +61,16 @@ class RSSAdapter(var activity: IHomeActivity,
         var options = RequestOptions()
                 .error(R.mipmap.ic_launcher)
 
-        holder.root.setOnClickListener { activity.openRssDetails(item, holder) }
+        holder.root.setOnClickListener {
+            Timber.d("jsp transition ad: ${holder.icon.transitionName}")
+            hostView.openRssDetails(item, holder)
+        }
 
         if (item.imgUrl != "") {
             holder.icon.visibility = View.VISIBLE
-            Glide.with(activity.appContext())
+            Glide.with(hostView.appContext())
                     .load(item.imgUrl)
-                    .apply(options)
+                    //                    .apply(options)
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?,
                                                   model: Any?,
@@ -73,6 +78,8 @@ class RSSAdapter(var activity: IHomeActivity,
                                                   isFirstResource: Boolean): Boolean {
                             Timber.e("jsp load of ${items[position].imgUrl} failed")
                             holder.progress.visibility = View.GONE
+                            holder.icon.setImageResource(0)
+                            holder.icon.visibility = View.GONE
                             return false
                         }
 

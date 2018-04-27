@@ -10,13 +10,23 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 
 class RssInteractor(val iRssRepository: IRssRepository) : IRssInteractor {
+    companion object {
+        private var instance: RssInteractor? = null
 
+        fun getInstance(iRssRepository: IRssRepository): RssInteractor {
+            if (instance == null)
+                instance = RssInteractor(iRssRepository)
+            return instance!!
+        }
+    }
 
     /**
      * ==========================        IRssInteractor implementation        ==========================
      */
     val feedReceivedSubject: PublishSubject<List<DataHolder>> = PublishSubject.create()
     var checkCounter = 0
+    private var lastTimeLoadedFromWeb = 0L
+    private val refreshThreshHold = 1000 * 60 * 10  // 10 min
 
     override fun getFeed(): Observable<List<DataHolder>> {
         Timber.d("jsp interactor getfeed")
@@ -25,14 +35,18 @@ class RssInteractor(val iRssRepository: IRssRepository) : IRssInteractor {
                     sendFeed(list)
                 }
 
-        iRssRepository.getFeedsList()
-                .flatMapIterable { feed -> feed } // Observable of links to feed
-                .flatMap { feed -> iRssRepository.loadFeedFromWeb(feed).toObservable() } // List<DataHolder>
-                .flatMap { list -> iRssRepository.cacheFeed(list).toObservable() }
-                .flatMap { _ -> iRssRepository.getCachedFeeds().toObservable() }
-                .subscribeOn(Schedulers.io()).subscribe { list ->
-                    sendFeed(list)
-                }
+        // load from web only after certain time
+        if (System.currentTimeMillis() - refreshThreshHold > lastTimeLoadedFromWeb) {
+            lastTimeLoadedFromWeb = System.currentTimeMillis()
+            iRssRepository.getFeedsList()
+                    .flatMapIterable { feed -> feed } // Observable of links to feed
+                    .flatMap { feed -> iRssRepository.loadFeedFromWeb(feed).toObservable() } // List<DataHolder>
+                    .flatMap { list -> iRssRepository.cacheFeed(list).toObservable() }
+                    .flatMap { _ -> iRssRepository.getCachedFeeds().toObservable() }
+                    .subscribeOn(Schedulers.io()).subscribe { list ->
+                        sendFeed(list)
+                    }
+        }
 
         return feedReceivedSubject
     }

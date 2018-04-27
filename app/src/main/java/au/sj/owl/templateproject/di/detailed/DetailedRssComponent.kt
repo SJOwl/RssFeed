@@ -1,7 +1,6 @@
 package au.sj.owl.templateproject.di.detailed
 
-import au.sj.owl.templateproject.ui.details.DetailsActivity
-import au.sj.owl.templateproject.ui.details.DetailsFragment
+import au.sj.owl.templateproject.ui.home.details.DetailsActivity
 import dagger.Subcomponent
 
 
@@ -10,5 +9,4 @@ import dagger.Subcomponent
 interface DetailedRssComponent {
 
     fun inject(detailsActivity: DetailsActivity)
-    fun inject(detailsFragment: DetailsFragment)
 }

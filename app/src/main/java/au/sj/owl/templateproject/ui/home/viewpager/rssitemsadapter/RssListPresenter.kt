@@ -1,4 +1,4 @@
-package au.sj.owl.templateproject.ui.home
+package au.sj.owl.templateproject.ui.home.viewpager.rssitemsadapter
 
 import au.sj.owl.templateproject.business.interfaces.IRssInteractor
 import au.sj.owl.templateproject.ui.home.dataholder.DataHolder

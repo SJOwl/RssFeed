@@ -1,4 +1,4 @@
-package au.sj.owl.templateproject.ui.details
+package au.sj.owl.templateproject.ui.home.details
 
 import au.sj.owl.templateproject.business.interfaces.IRssInteractor
 import au.sj.owl.templateproject.ui.home.dataholder.DataHolder

@@ -1,8 +1,8 @@
 package au.sj.owl.templateproject.di.detailed
 
 import au.sj.owl.templateproject.business.interfaces.IRssInteractor
-import au.sj.owl.templateproject.ui.details.DetailedRssPresenter
-import au.sj.owl.templateproject.ui.details.IDetailedRssPresenter
+import au.sj.owl.templateproject.ui.home.details.DetailedRssPresenter
+import au.sj.owl.templateproject.ui.home.details.IDetailedRssPresenter
 import dagger.Module
 import dagger.Provides
 

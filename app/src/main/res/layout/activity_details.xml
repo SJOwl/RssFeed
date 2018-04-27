@@ -4,6 +4,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -68,7 +69,6 @@
                 android:paddingEnd="4dp"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="2dp"
-                android:text="Title"
                 android:textColor="@color/colorText"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -94,7 +94,6 @@
                 android:paddingEnd="4dp"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="2dp"
-                android:text="34 min ago"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -123,7 +122,7 @@
             <WebView
                 android:id="@+id/rssdetWebView"
                 android:layout_width="0dp"
-                android:layout_height="10dp"
+                android:layout_height="500dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

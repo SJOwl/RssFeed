@@ -23,6 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     kapt { generateStubs = true }
 }
 
@@ -70,11 +71,5 @@ dependencies {
     compile 'com.android.support:support-v4:27.1.1'
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
 
-//    implementation 'com.android.support:palette-v7:27.1.1'
-
-    // rss parser
-//    compile 'com.icosillion.podengine:podengine:2.2'
-
-//    compile 'com.rometools:rome:1.9.0'
-
+    compile 'com.android.support:cardview-v7:27.1.1'
 }

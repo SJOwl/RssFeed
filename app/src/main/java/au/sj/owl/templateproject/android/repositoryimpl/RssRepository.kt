@@ -1,5 +1,6 @@
-package au.sj.owl.templateproject.data
+package au.sj.owl.templateproject.android.repositoryimpl
 
+import android.annotation.SuppressLint
 import android.content.Context
 import au.sj.owl.templateproject.business.implementation.RssModel
 import au.sj.owl.templateproject.business.interfaces.IRssRepository
@@ -13,21 +14,50 @@ import java.lang.Exception
 import java.net.URL
 
 class RssRepository(val context: Context) : IRssRepository {
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        private var instance: RssRepository? = null
+
+        fun getInstance(context: Context): RssRepository {
+            if (instance == null)
+                instance = RssRepository(
+                        (context))
+            return instance!!
+        }
+    }
+
     override fun getItem(link: String): Single<DataHolder> {
         return Single.fromCallable { RssDataBase.getInstance(context).rssDataDao().get(link) }
     }
 
     override fun getFeedsList(): Observable<List<String>> {
         Timber.d("jsp repo getFeedsList()")
-        return Observable.just(mutableListOf( //"http://feeds.feedburner.com/TechCrunch/"
-                //                "https://www.economist.com/sections/economics/rss.xml" // many images
-                "https://www.popsci.com/rss-science.xml?loc=contentwell&lnk=science&dom=section-1"
-                //                                             "https://www.popsci.com/rss-eastern-arsenal.xml?loc=contentwell&lnk=eastern-arsenal&dom=section-1"
+        return Observable.just(mutableListOf("http://feeds.feedburner.com/TechCrunch",
+                                             "https://lifehacker.com/rss",
+                                             "http://feeds.feedburner.com/Techcrunch",
+                                             "http://feeds.wired.com/wired/index",
+                                             "http://feeds.nytimes.com/nyt/rss/Technology",
+                                             "http://feeds.feedburner.com/time/gadgetoftheweek",
+                                             "http://rss.macworld.com/macworld/feeds/main",
+                                             "http://feeds.pcworld.com/pcworld/latestnews",
+                                             "http://www.techworld.com/news/rss",
+                                             "http://feeds.gawker.com/lifehacker/vip",
+                                             "http://feeds.feedburner.com/readwriteweb",
+                                             "http://www.engadget.com/rss-full.xml",
+                                             "http://readwrite.com/feed/",
+                                             "http://feeds.mashable.com/Mashable",
+                                             "http://feeds.feedburner.com/oreilly/radar/atom",
+                                             "http://brb.yahoo.com/",
+                                             "http://feeds.gawker.com/gizmodo/full",
+                                             "https://www.technologyreview.com/rss/"
                                             ))
     }
 
+    private var laodFromWebCounter = 0
+
     override fun loadFeedFromWeb(feed: String): Single<List<DataHolder>> {
-        Timber.d("jsp repo loadFeedFromWeb()")
+        Timber.e("jsp repo foooooooooooooooooo!!!  load from web ${laodFromWebCounter++} time")
         var url = URL(feed)
         return Single.fromCallable {
             //            Thread.sleep(1000)
@@ -73,9 +103,11 @@ class RssRepository(val context: Context) : IRssRepository {
         return Single.fromCallable {
             val db = RssDataBase.getInstance(context).rssDataDao()
             val item = db.get(link)
-            item.bookmarked = !item.bookmarked
-            db.updateRssItem(item)
-            return@fromCallable item.bookmarked
+            if (item != null) {
+                item.bookmarked = !item.bookmarked
+                db.updateRssItem(item)
+                return@fromCallable item.bookmarked
+            } else throw IllegalStateException("attempt to bookmark non-existed rssItem")
         }
     }
 

@@ -13,10 +13,10 @@ interface RssItemsDao {
     fun saveAll(list: List<DataHolder>)
 
     @Query("SELECT * from rss_feeds WHERE link = :link LIMIT 1")
-    fun get(link: String): DataHolder
+    fun get(link: String): DataHolder?
 
     @Query("SELECT * from rss_feeds")
-    fun getAll(): List<DataHolder>
+    fun getAll(): List<DataHolder>?
 
     @Query("SELECT * from rss_feeds WHERE bookmarked='true'")
     fun getBookmarked(): List<DataHolder>

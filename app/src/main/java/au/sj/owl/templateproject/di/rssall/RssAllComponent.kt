@@ -2,8 +2,8 @@ package au.sj.owl.templateproject.di.rssall
 
 import au.sj.owl.templateproject.di.detailed.DetailedRssComponent
 import au.sj.owl.templateproject.di.detailed.DetailedRssModule
-import au.sj.owl.templateproject.ui.home.rssall.RssFeedsAllFragment
-import au.sj.owl.templateproject.ui.home.rssbookmarked.RssFeedsBookmarkedFragment
+import au.sj.owl.templateproject.ui.home.viewpager.RssFeedsAllFragment
+import au.sj.owl.templateproject.ui.home.viewpager.RssFeedsBookmarkedFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [RssAllModule::class])

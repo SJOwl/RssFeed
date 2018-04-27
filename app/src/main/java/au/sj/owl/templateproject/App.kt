@@ -15,7 +15,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //        initCanary()
+        initCanary()
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
