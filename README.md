@@ -1,3 +1,3 @@
-# TemplateProject
-Template for clean android project
-Gradle dependencies and App configurated
+# Rss Feed
+Test task
+Installation: download and install on Android device RssFeed.apk
