@@ -30,6 +30,21 @@ class RssInteractor(val iRssRepository: IRssRepository) : IRssInteractor {
 
     override fun getFeed(): Observable<List<DataHolder>> {
         Timber.d("jsp interactor getfeed")
+
+        //        val resources = mutableListOf<Observable<List<DataHolder>>>()
+        //
+        //        resources.add(iRssRepository.getCachedFeeds().toObservable())
+        //
+        //        iRssRepository.getFeedsList().subscribe { feeds ->
+        //            feeds.forEach { feed ->
+        //                resources.add(iRssRepository.loadFeedFromWeb(feed).toObservable())
+        //            }
+        //        }
+        //
+        //        return Observable.merge(resources)
+        //                .flatMap { list -> iRssRepository.cacheFeed(list).toObservable() }
+        //                .flatMap { _ -> iRssRepository.getCachedFeeds().toObservable() }
+
         iRssRepository.getCachedFeeds()
                 .subscribeOn(Schedulers.io()).subscribe { list ->
                     sendFeed(list)
